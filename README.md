@@ -7,6 +7,7 @@ Each fix is a separate Flutter plugin in `packages/`; an app adds only the ones 
 |---|---|
 | `webview_key_guard` | A key press on a web page reaches the page more than once (macOS + Flutter redispatch of unhandled keys). |
 | `webview_modal_guard` | Mouse input passes through Flutter dialogs and menus to the web page under them. |
+| `webview_hover_guard` | Page hover jumps to another element or disappears when Flutter draws a frame. |
 
 ## Use in an app
 
