@@ -1,0 +1,23 @@
+.dart_tool/
+.build/
+.swiftpm/
+build/
+/pubspec.lock
+
+# Local environment and credentials must not be published.
+.DS_Store
+.env
+.env.*
+!.env.example
+pubspec_overrides.yaml
+*.pem
+*.key
+*.p12
+*.pfx
+*.keystore
+*.jks
+*.mobileprovision
+id_rsa
+id_ed25519
+
+.flutter-plugins-dependencies

@@ -1,0 +1,15 @@
+{
+  "kind": "self-posted AppKit events, observation disabled",
+  "passed": true,
+  "downs": 21,
+  "ups": 8,
+  "repeats": 4,
+  "duplicates": 0,
+  "prevented": 0,
+  "labSuppressed": 0,
+  "labRouted": 0,
+  "restartRequired": false,
+  "physicalKeyboardQualified": false,
+  "flutterVersion": "3.47.5",
+  "dartVersion": "3.13.4"
+}

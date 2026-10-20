@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>WebView key guard probe</title>
+<style>
+  body { margin: 24px; font: 16px system-ui; color: #202329; background: #f4f6f8; }
+  h1 { font-size: 22px; }
+  label { display: block; margin-top: 20px; }
+  textarea, input { box-sizing: border-box; width: 100%; padding: 12px; font: inherit; }
+  textarea { height: 180px; }
+  output { display: block; margin: 16px 0; font-variant-numeric: tabular-nums; }
+  pre { white-space: pre-wrap; overflow-wrap: anywhere; font-size: 13px; }
+</style>
+<h1>WebView key guard probe</h1>
+<output id="counter">0 events / 0 duplicates / 0 repeats</output>
+<button id="reset" type="button">Reset counters</button>
+<label for="prompt">Prompt</label>
+<textarea id="prompt" autofocus></textarea>
+<label for="input">Input</label>
+<input id="input" value="Test input">
+<label for="editor">Rich text</label>
+<div id="editor" contenteditable="true">Editable text</div>
+<pre id="recent"></pre>
+<script>
+  const freshState = () => ({
+    run: String(Date.now()), keydowns: 0, keyups: 0, duplicates: 0, repeats: 0,
+    stopped: false, combinations: {}, recent: [],
+  });
+  let state = freshState();
+  const seen = new Set();
+  let dirty = true, sending = false;
+  document.addEventListener('keydown', event => {
+    const chord = [event.metaKey && 'Cmd', event.ctrlKey && 'Ctrl',
+      event.altKey && 'Alt', event.shiftKey && 'Shift', event.code].filter(Boolean).join('+');
+    const signature = [event.timeStamp, chord, event.repeat].join(':');
+    const duplicate = seen.has(signature);
+    seen.add(signature);
+    if (seen.size > 4096) seen.delete(seen.values().next().value);
+    state.keydowns++;
+    state.duplicates += Number(duplicate);
+    state.repeats += Number(event.repeat);
+    state.combinations[chord] = (state.combinations[chord] || 0) + 1;
+    state.recent.push({chord, timestamp: event.timeStamp, duplicate,
+      repeat: event.repeat, target: event.target.id, trusted: event.isTrusted});
+    if (state.recent.length > 32) state.recent.shift();
+    // Safety stop is a failed probe, never a successful protection result.
+    if (state.duplicates >= 40) { state.stopped = true; event.preventDefault(); }
+    dirty = true;
+  }, true);
+  document.addEventListener('keyup', () => { state.keyups++; dirty = true; }, true);
+  // Starts a new run with zero counters (also clears a safety stop).
+  document.getElementById('reset').addEventListener('click', event => {
+    state = freshState();
+    seen.clear();
+    dirty = true;
+    // Keep keyboard focus off the button, so Space/Enter in the next test don't press it.
+    event.currentTarget.blur();
+  });
+  setInterval(async () => {
+    if (!dirty || sending) return;
+    dirty = false;
+    sending = true;
+    document.getElementById('counter').textContent =
+      `${state.keydowns} events / ${state.duplicates} duplicates / ${state.repeats} repeats`;
+    document.getElementById('recent').textContent = JSON.stringify(state.recent.slice(-8), null, 2);
+    try {
+      await fetch('/_events', {method: 'POST', headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(state)});
+    } catch (_) { dirty = true; }
+    finally { sending = false; }
+  }, 150);
+</script>
+</html>

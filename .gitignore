@@ -1,0 +1,10 @@
+.DS_Store
+.build/
+.swiftpm/
+.dart_tool/
+.idea/
+*.iml
+build/
+.flutter-plugins-dependencies
+**/macos/Flutter/ephemeral/
+**/macos/Pods/

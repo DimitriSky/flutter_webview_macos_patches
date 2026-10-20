@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Keyboard events only</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { font: 15px -apple-system, sans-serif; color: #172426; background: #fff; margin: 24px; }
+    h1 { font-size: 22px; margin: 0 0 24px; }
+    label { display: block; margin: 20px 0 8px; font-weight: 600; }
+    textarea, input, [contenteditable] { font: inherit; width: 100%; padding: 12px; border: 1px solid #adbabd; border-radius: 4px; }
+    textarea { height: 150px; resize: none; }
+    [contenteditable] { min-height: 80px; }
+    :focus { outline: 2px solid #008697; outline-offset: 2px; }
+    output { display: block; margin-top: 24px; font: 13px ui-monospace, monospace; }
+    footer { margin-top: 14px; color: #5f6c70; font-size: 12px; overflow-wrap: anywhere; }
+  </style>
+  <script defer src="/keyboard.js"></script>
+</head>
+<body>
+  <h1>Keyboard events only</h1>
+  <label for="prompt">Prompt</label>
+  <textarea id="prompt" spellcheck="false">Test input</textarea>
+  <label for="second">Input</label>
+  <input id="second" value="clipboard sample" spellcheck="false">
+  <label for="editor">Rich text</label>
+  <div id="editor" contenteditable="true" role="textbox" aria-label="Rich text">Bold, undo, copy, paste</div>
+  <output id="counter">Waiting for events</output>
+  <footer id="run"></footer>
+</body>
+</html>
